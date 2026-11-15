@@ -20,7 +20,7 @@ permissions:
 jobs:
   build:
     name: Build & Release Minimal Image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout Repository
@@ -30,8 +30,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            qemu-user-static \
-            binfmt-support \
             parted \
             dosfstools \
             e2fsprogs \
@@ -39,7 +37,9 @@ jobs:
             zstd \
             libarchive-tools \
             wget \
-            curl
+            curl \
+            binfmt-support
+          sudo apt-get install -y qemu-user-static || sudo apt-get install -y qemu-user-binfmt
 
       - name: Set Release Tag
         id: vars
