@@ -13,9 +13,9 @@ if [ ! -s /etc/pacman.d/mirrorlist ]; then
   echo "Server = http://os.archlinuxarm.org/\$arch/\$repo" > /etc/pacman.d/mirrorlist
 fi
 
-# 2. Update database & install essential packages
-echo "==> [chroot] Updating database and installing essentials..."
-pacman -Sy --noconfirm
+# 2. Update database & perform full system upgrade + essentials
+echo "==> [chroot] Performing full system upgrade and installing essentials..."
+pacman -Syu --noconfirm
 
 # Essential packages for minimal headless SBC operation
 ESSENTIAL_PKGS=(
