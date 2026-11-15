@@ -1,0 +1,104 @@
+name: Build Orange Pi Zero Arch Linux ARM Image
+
+on:
+  schedule:
+    # Run every Sunday at 04:00 UTC
+    - cron: '0 4 * * 0'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Custom tag for release (leave blank for weekly date tag)'
+        required: false
+        default: ''
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Release Minimal Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Build Prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            qemu-user-static \
+            binfmt-support \
+            parted \
+            dosfstools \
+            e2fsprogs \
+            u-boot-tools \
+            zstd \
+            libarchive-tools \
+            wget \
+            curl
+
+      - name: Set Release Tag
+        id: vars
+        run: |
+          if [ -n "${{ github.event.inputs.release_tag }}" ]; then
+            TAG="${{ github.event.inputs.release_tag }}"
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            TAG="v$(date -u +%Y.%m.%d)"
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "date=$(date -u +'%B %d, %Y')" >> "$GITHUB_OUTPUT"
+
+      - name: Build Minimal Image
+        run: |
+          sudo ./scripts/build-image.sh
+
+      - name: Verify Build Artifacts
+        run: |
+          ls -la orangepi-zero-alarm-*.img.zst*
+          cat orangepi-zero-alarm-*.img.zst.sha256
+
+      - name: Generate Release Notes
+        run: |
+          cat << 'EOF' > RELEASE_NOTES.md
+          ## 🍊 Orange Pi Zero Minimal Arch Linux ARM Image
+          **Build Date:** ${{ steps.vars.outputs.date }}
+          **Target SoC:** Allwinner H2+ / H3 (256MB / 512MB RAM)
+
+          ### 🚀 Features & Optimizations
+          - **Rock-solid U-Boot:** Sector 16 SPL layout (`bs=1k seek=8 conv=notrunc`) with proven stability and DRAM timing.
+          - **Interface Daughterboard Support:** Full hardware tree (`sun8i-h2-plus-orangepi-zero-interface-board.dtb`) enabling dual auxiliary USB host ports, analog 3.5mm audio, and infrared receiver.
+          - **256MB RAM Memory Safeguards:** Pre-configured 384 MB LZ4 ZRAM swap with tuned VM swappiness & cache pressure. Zero OOM lockups.
+          - **Power Sag Protection:** Integrated `cpufreq-governor.service` capping quad-core CPU bursts to 1.008 GHz on standard micro-USB chargers.
+          - **Networking Ready:** Networkd DHCP enabled with fallback public DNS (`1.1.1.1 8.8.8.8 9.9.9.9`), predictable `wlan0` naming, and XR819 wireless driver pre-integrated.
+          - **AliveOS Tools:** Includes `orangepi-config` for TUI/Web board configuration and storage management.
+
+          ### 📦 Default Credentials
+          - **Root user:** `root` / `root` (SSH root login permitted)
+          - **Standard user:** `alarm` / `alarm` (sudo enabled)
+
+          ### 💾 Flashing Instructions
+          Decompress and write directly to your MicroSD card (replace `/dev/sdX` with your SD card device):
+          ```bash
+          zstd -dc orangepi-zero-alarm-*.img.zst | sudo dd of=/dev/sdX bs=4M status=progress conv=fsync
+          ```
+          EOF
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: "Orange Pi Zero Minimal Image ${{ steps.vars.outputs.tag }}"
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false
+          files: |
+            orangepi-zero-alarm-*.img.zst
+            orangepi-zero-alarm-*.img.zst.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

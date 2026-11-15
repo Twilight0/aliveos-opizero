@@ -1,0 +1,7 @@
+# Build outputs & caches
+*.img
+*.img.zst
+*.sha256
+cache/
+output/
+.DS_Store
