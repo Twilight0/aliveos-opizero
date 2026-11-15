@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#
+# Automatic first-boot root partition and filesystem expander for Orange Pi Zero
+#
+set -euo pipefail
+
+ROOT_PART="$(findmnt -n -o SOURCE / 2>/dev/null || true)"
+
+if [ -z "$ROOT_PART" ]; then
+  echo "Error: Could not determine root partition." >&2
+  exit 0
+fi
+
+# Resolve symlinks (e.g. /dev/root or by-label)
+REAL_PART="$(readlink -f "$ROOT_PART")"
+
+DEV=""
+PART_NUM=""
+
+if [[ "$REAL_PART" =~ ^(/dev/mmcblk[0-9]+)p([0-9]+)$ ]]; then
+  DEV="${BASH_REMATCH[1]}"
+  PART_NUM="${BASH_REMATCH[2]}"
+elif [[ "$REAL_PART" =~ ^(/dev/sd[a-z]+)([0-9]+)$ ]]; then
+  DEV="${BASH_REMATCH[1]}"
+  PART_NUM="${BASH_REMATCH[2]}"
+else
+  echo "Notice: Unrecognized partition naming format: $REAL_PART"
+  exit 0
+fi
+
+echo "==> [orangepi-resize] Expanding partition $PART_NUM on $DEV to 100%..."
+parted -s "$DEV" resizepart "$PART_NUM" 100% || true
+
+echo "==> [orangepi-resize] Probing kernel partition table..."
+partprobe "$DEV" 2>/dev/null || true
+sleep 1
+
+echo "==> [orangepi-resize] Resizing ext4 filesystem on $REAL_PART..."
+resize2fs "$REAL_PART" || true
+
+echo "==> [orangepi-resize] Successfully expanded root partition!"
+echo "==> Disabling one-shot resize service..."
+systemctl disable orangepi-resize-rootfs.service 2>/dev/null || true
+rm -f /etc/systemd/system/orangepi-resize-rootfs.service

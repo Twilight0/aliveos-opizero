@@ -31,6 +31,15 @@ ESSENTIAL_PKGS=(
   haveged
   python
   python-urwid
+  usbutils
+  htop
+  tmux
+  parted
+  e2fsprogs
+  dosfstools
+  exfatprogs
+  avahi
+  nss-mdns
 )
 
 pacman -S --noconfirm --needed "${ESSENTIAL_PKGS[@]}"
@@ -92,6 +101,13 @@ systemctl enable systemd-resolved.service
 systemctl enable sshd.service
 systemctl enable cpufreq-governor.service
 systemctl enable haveged.service 2>/dev/null || true
+systemctl enable avahi-daemon.service 2>/dev/null || true
+systemctl enable orangepi-resize-rootfs.service 2>/dev/null || true
+
+# Configure mDNS host resolution
+if [ -f /etc/nsswitch.conf ]; then
+  sed -i 's/^hosts:.*/hosts: mymachines mdns_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] files myhostname dns/' /etc/nsswitch.conf || true
+fi
 
 # Enable orangepi-config web TUI if installed
 if systemctl list-unit-files | grep -q orangepi-config-web; then

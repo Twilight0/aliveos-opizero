@@ -1,0 +1,13 @@
+[Unit]
+Description=Orange Pi Zero First-Boot Filesystem Auto-Expansion
+DefaultDependencies=no
+After=local-fs.target
+Before=basic.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/orangepi-resize-rootfs
+
+[Install]
+WantedBy=basic.target

@@ -19,17 +19,25 @@ Designed from the ground up for maximum power stability, zero OOM crashes on the
    - The Orange Pi Zero lacks a dedicated PMIC and is prone to brownout resets under quad-core load on standard 5V chargers.
    - Built-in `cpufreq-governor.service` dynamically sets the `ondemand` governor and caps maximum frequency to `1.008 GHz`, preventing voltage drop crashes while preserving snappy performance.
 
-3. **256 MB RAM Safeguards (Zero OOM)**
-   - Pre-configured `zram-generator` with 384 MB LZ4 compressed swap in RAM.
-   - Optimized kernel VM swappiness (`vm.swappiness = 100`, `vm.vfs_cache_pressure = 50`).
+3. **256 MB & 512 MB Dynamic RAM Support (Zero OOM)**
+   - Automatic DRAM geometry auto-detection in U-Boot SPL (supports both 256 MB and 512 MB models out-of-the-box).
+   - Pre-configured `zram-generator` with dynamic scaling (`min(ram * 1.5, 512)`): 384 MB ZRAM for 256 MB boards, 512 MB ZRAM for 512 MB boards.
+   - Tuned kernel VM swappiness (`vm.swappiness = 100`, `vm.vfs_cache_pressure = 50`).
 
-4. **Reliable Headless Networking**
+4. **First-Boot Auto-Resize**
+   - Built-in one-shot `orangepi-resize-rootfs.service` automatically expands the root partition to 100% of your MicroSD card and resizes the ext4 filesystem online.
+
+5. **ZeroConf / mDNS Discovery (`orangepi-zero.local`)**
+   - Pre-configured `avahi-daemon` allows immediate access via `ssh root@orangepi-zero.local` or browser access at `http://orangepi-zero.local:46363` without checking router DHCP tables.
+
+6. **Reliable Headless Networking**
    - Out-of-the-box `systemd-networkd` DHCP for Ethernet (`eth0`) and Wi-Fi (`wlan0`).
    - Integrated DNS fallback (`1.1.1.1 8.8.8.8 9.9.9.9`) to prevent pacman domain resolution timeouts when behind strict or misconfigured consumer routers.
    - Pre-installed Allwinner XR819 wireless driver (`xradio-linux-armv7`) and vendor firmware.
 
-5. **Integrated Diagnostics & Setup**
+7. **Essential Tools & Diagnostics**
    - Ships with [`orangepi-config`](https://github.com/Twilight0/orangepi-config) for full TUI and Web-based administration (hardware toggles, Wi-Fi configuration, external storage management, torrent/media stack).
+   - Pre-installed utilities: `usbutils` (`lsusb`), `htop`, `tmux`, `dosfstools`, `exfatprogs`, and an informative ASCII login MOTD displaying real-time thermals, memory, and IP addresses.
 
 ---
 

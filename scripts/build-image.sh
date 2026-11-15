@@ -144,6 +144,17 @@ cp "${ROOT_DIR}"/configs/firmware/xr819/* "${MNT_DIR}/usr/lib/firmware/xr819/"
 mkdir -p "${MNT_DIR}/etc/ssh/sshd_config.d"
 cp "${ROOT_DIR}/configs/permit-root.conf" "${MNT_DIR}/etc/ssh/sshd_config.d/"
 
+# First-boot rootfs auto-expansion
+mkdir -p "${MNT_DIR}/usr/local/bin"
+cp "${ROOT_DIR}/configs/orangepi-resize-rootfs" "${MNT_DIR}/usr/local/bin/orangepi-resize-rootfs"
+chmod +x "${MNT_DIR}/usr/local/bin/orangepi-resize-rootfs"
+cp "${ROOT_DIR}/configs/orangepi-resize-rootfs.service" "${MNT_DIR}/etc/systemd/system/orangepi-resize-rootfs.service"
+
+# Login Welcome MOTD banner
+mkdir -p "${MNT_DIR}/etc/profile.d"
+cp "${ROOT_DIR}/configs/99-orangepi-motd.sh" "${MNT_DIR}/etc/profile.d/99-orangepi-motd.sh"
+chmod +x "${MNT_DIR}/etc/profile.d/99-orangepi-motd.sh"
+
 # 10. Chroot configuration
 echo "==> Entering chroot via QEMU..."
 cp "$QEMU_BIN" "${MNT_DIR}/usr/bin/qemu-arm-static"

@@ -73,10 +73,12 @@ jobs:
           ### 🚀 Features & Optimizations
           - **Rock-solid U-Boot:** Sector 16 SPL layout (`bs=1k seek=8 conv=notrunc`) with proven stability and DRAM timing.
           - **Interface Daughterboard Support:** Full hardware tree (`sun8i-h2-plus-orangepi-zero-interface-board.dtb`) enabling dual auxiliary USB host ports, analog 3.5mm audio, and infrared receiver.
-          - **256MB RAM Memory Safeguards:** Pre-configured 384 MB LZ4 ZRAM swap with tuned VM swappiness & cache pressure. Zero OOM lockups.
+          - **Dynamic 256MB & 512MB RAM Support:** Auto-detects memory size in U-Boot SPL; dynamically scales ZRAM (384MB on 256MB boards, 512MB on 512MB boards). Zero OOM lockups.
           - **Power Sag Protection:** Integrated `cpufreq-governor.service` capping quad-core CPU bursts to 1.008 GHz on standard micro-USB chargers.
+          - **First-Boot Auto-Resize:** One-shot `orangepi-resize-rootfs.service` automatically expands root partition to 100% of MicroSD card.
+          - **mDNS / ZeroConf Discovery:** Access immediately via `ssh root@orangepi-zero.local` or web browser at `http://orangepi-zero.local:46363`.
           - **Networking Ready:** Networkd DHCP enabled with fallback public DNS (`1.1.1.1 8.8.8.8 9.9.9.9`), predictable `wlan0` naming, and XR819 wireless driver pre-integrated.
-          - **AliveOS Tools:** Includes `orangepi-config` for TUI/Web board configuration and storage management.
+          - **Pre-installed Tools:** `orangepi-config`, `usbutils` (`lsusb`), `htop`, `tmux`, `dosfstools`, `exfatprogs`, and an interactive welcome MOTD.
 
           ### 📦 Default Credentials
           - **Root user:** `root` / `root` (SSH root login permitted)
