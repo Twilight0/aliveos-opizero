@@ -44,19 +44,25 @@ jobs:
       - name: Set Release Tag
         id: vars
         run: |
+          git fetch --tags 2>/dev/null || true
           if [ -n "${{ github.event.inputs.release_tag }}" ]; then
             TAG="${{ github.event.inputs.release_tag }}"
           elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
             TAG="${GITHUB_REF#refs/tags/}"
           else
-            TAG="v$(date -u +%Y.%m.%d)"
+            BASE_TAG="v$(date -u +%Y.%m.%d)"
+            if git rev-parse "refs/tags/${BASE_TAG}" >/dev/null 2>&1; then
+              TAG="${BASE_TAG}.${{ github.run_number }}"
+            else
+              TAG="${BASE_TAG}"
+            fi
           fi
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "date=$(date -u +'%B %d, %Y')" >> "$GITHUB_OUTPUT"
 
       - name: Build Minimal Image
         run: |
-          sudo ./scripts/build-image.sh
+          sudo OUTPUT_NAME="orangepi-zero-alarm-${{ steps.vars.outputs.tag }}" ./scripts/build-image.sh
 
       - name: Verify Build Artifacts
         run: |
