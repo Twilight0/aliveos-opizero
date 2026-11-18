@@ -94,7 +94,7 @@ The image is intentionally stripped of bloat while providing essential tools for
 
 | Utility | Purpose |
 | :--- | :--- |
-| **`orangepi-config`** | Full TUI and Web management tool (Wi-Fi setup, CPU governors, external storage manager, torrent & media software catalog). |
+| **`orangepi-config` & `ttyd`** | Full TUI and HTTP Web management UI (`http://orangepi-zero.local:46363`, default `admin:admin`) for Wi-Fi, PIA WireGuard VPN, CPU governors, storage, and software catalog. |
 | **`avahi` & `nss-mdns`** | ZeroConf / mDNS discovery on local networks (`orangepi-zero.local`). |
 | **`usbutils` (`lsusb`)** | Inspect and verify plugged-in USB storage, webcams, printers, and daughterboard ports. |
 | **`htop`** | Interactive real-time process, CPU, temperature, and memory monitor. |

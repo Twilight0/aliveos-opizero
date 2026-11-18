@@ -41,7 +41,9 @@ ESSENTIAL_PKGS=(
   avahi
   nss-mdns
   wireguard-tools
+  openresolv
   jq
+  ttyd
 )
 
 pacman -S --noconfirm --needed "${ESSENTIAL_PKGS[@]}"
