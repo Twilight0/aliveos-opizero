@@ -102,6 +102,7 @@ The image is intentionally stripped of bloat while providing essential tools for
 | **`dosfstools` & `exfatprogs`** | Native support for formatting and mounting FAT32 and exFAT USB drives. |
 | **`wpa_supplicant` & `iw`** | Command-line tools for Wi-Fi scanning and WPA/WPA2/WPA3 network authentication. |
 | **`zram-generator`** | Dynamic LZ4 compressed swap in RAM (prevents OOM on 256MB/512MB RAM). |
+| **`wireguard-tools` & `jq`** | Kernel WireGuard VPN support + pre-installed PIA `manual-connections` scripts (`/opt/pia-manual-connections`, configurable via `orangepi-config`). |
 | **`haveged`** | High-quality entropy daemon for fast boot and SSH key generation. |
 | **`xradio-linux-armv7`** | Out-of-tree kernel driver for the Allwinner XR819 wireless chip. |
 | **`xr819` firmware** | Vendor firmware files (`boot_xr819.bin`, `fw_xr819.bin`, `sdd_xr819.bin`) installed in `/usr/lib/firmware/xr819/`. |

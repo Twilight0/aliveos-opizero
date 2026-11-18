@@ -40,6 +40,8 @@ ESSENTIAL_PKGS=(
   exfatprogs
   avahi
   nss-mdns
+  wireguard-tools
+  jq
 )
 
 pacman -S --noconfirm --needed "${ESSENTIAL_PKGS[@]}"
@@ -49,7 +51,11 @@ echo "==> [chroot] Installing AliveOS prebuilt packages..."
 ALIVEOS_RELEASE="https://github.com/Twilight0/aliveos-repo/releases/download/latest"
 
 mkdir -p /tmp/pkgs
-if curl -fSL -o /tmp/pkgs/orangepi-config.pkg.tar.zst "${ALIVEOS_RELEASE}/orangepi-config-0.2.0-1-any.pkg.tar.zst" 2>/dev/null; then
+OPI_CFG_URL="$(curl -fsSL https://api.github.com/repos/Twilight0/aliveos-repo/releases/tags/latest 2>/dev/null | \
+  python3 -c "import sys, json; data = json.load(sys.stdin); assets = [a['browser_download_url'] for a in data.get('assets', []) if a['name'].startswith('orangepi-config-') and a['name'].endswith('.pkg.tar.zst')]; print(assets[0] if assets else '')" 2>/dev/null || true)"
+OPI_CFG_URL="${OPI_CFG_URL:-${ALIVEOS_RELEASE}/orangepi-config-0.2.0-9-any.pkg.tar.zst}"
+
+if curl -fSL -o /tmp/pkgs/orangepi-config.pkg.tar.zst "${OPI_CFG_URL}" 2>/dev/null; then
   pacman -U --noconfirm --needed /tmp/pkgs/orangepi-config.pkg.tar.zst || echo "Warning: orangepi-config install failed"
 fi
 
@@ -57,6 +63,20 @@ if curl -fSL -o /tmp/pkgs/xradio-linux-armv7.pkg.tar.zst "${ALIVEOS_RELEASE}/xra
   pacman -U --noconfirm --needed /tmp/pkgs/xradio-linux-armv7.pkg.tar.zst || echo "Warning: xradio-linux-armv7 install failed"
 fi
 rm -rf /tmp/pkgs
+
+# 3b. Pre-install Private Internet Access (PIA) manual-connections scripts (no credentials)
+echo "==> [chroot] Installing PIA manual-connections scripts (unconfigured)..."
+mkdir -p /opt/pia-manual-connections
+if curl -fsSL https://github.com/pia-foss/manual-connections/archive/refs/heads/master.tar.gz | \
+   tar -xz --strip-components=1 -C /opt/pia-manual-connections; then
+  chmod +x /opt/pia-manual-connections/*.sh 2>/dev/null || true
+else
+  echo "Warning: Failed to download pia-foss/manual-connections (can be fetched later by orangepi-config)"
+fi
+
+# Enable hardware watchdog for automatic recovery on kernel hangs
+mkdir -p /etc/systemd/system.conf.d
+printf "[Manager]\nRuntimeWatchdogSec=15s\nShutdownWatchdogSec=2min\n" > /etc/systemd/system.conf.d/watchdog.conf
 
 # 4. Strip unneeded heavy GPU firmwares to minimize disk image and RAM overhead
 echo "==> [chroot] Stripping unneeded firmwares..."
