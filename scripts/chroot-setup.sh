@@ -56,7 +56,7 @@ ALIVEOS_RELEASE="https://github.com/Twilight0/aliveos-repo/releases/download/lat
 mkdir -p /tmp/pkgs
 OPI_CFG_URL="$(curl -fsSL https://api.github.com/repos/Twilight0/aliveos-repo/releases/tags/latest 2>/dev/null | \
   python3 -c "import sys, json; data = json.load(sys.stdin); assets = [a['browser_download_url'] for a in data.get('assets', []) if a['name'].startswith('orangepi-config-') and a['name'].endswith('.pkg.tar.zst')]; print(assets[0] if assets else '')" 2>/dev/null || true)"
-OPI_CFG_URL="${OPI_CFG_URL:-${ALIVEOS_RELEASE}/orangepi-config-0.2.1-1-any.pkg.tar.zst}"
+OPI_CFG_URL="${OPI_CFG_URL:-${ALIVEOS_RELEASE}/orangepi-config-0.2.2-1-any.pkg.tar.zst}"
 
 if curl -fSL -o /tmp/pkgs/orangepi-config.pkg.tar.zst "${OPI_CFG_URL}" 2>/dev/null; then
   pacman -U --noconfirm --needed /tmp/pkgs/orangepi-config.pkg.tar.zst || echo "Warning: orangepi-config install failed"
