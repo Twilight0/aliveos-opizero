@@ -1,7 +1,7 @@
 # Orange Pi Zero Minimal Arch Linux ARM Image Builder & Weekly CI
 
-[![Build Orange Pi Zero Arch Linux ARM Image](https://github.com/Twilight0/orangepi-zero-alarm/actions/workflows/build.yml/badge.svg)](https://github.com/Twilight0/orangepi-zero-alarm/actions/workflows/build.yml)
-[![Latest Release](https://img.shields.io/github/v/release/Twilight0/orangepi-zero-alarm?include_prereleases&color=orange)](https://github.com/Twilight0/orangepi-zero-alarm/releases/latest)
+[![Build AliveOS Orange Pi Zero Image](https://github.com/Twilight0/aliveos-opizero/actions/workflows/build.yml/badge.svg)](https://github.com/Twilight0/aliveos-opizero/actions/workflows/build.yml)
+[![Latest Release](https://img.shields.io/github/v/release/Twilight0/aliveos-opizero?include_prereleases&color=orange)](https://github.com/Twilight0/aliveos-opizero/releases/latest)
 
 An ultra-lean, rock-solid **Arch Linux ARM** system image for the **Orange Pi Zero (Allwinner H2+)**, built and released weekly via GitHub Actions.
 
@@ -39,18 +39,18 @@ Designed from the ground up for maximum power stability, zero OOM crashes on the
 
 ## 📥 Downloads & Flashing
 
-Download the latest `.img.zst` from [Releases](https://github.com/Twilight0/orangepi-zero-alarm/releases/latest).
+Download the latest `.img.zst` from [Releases](https://github.com/Twilight0/aliveos-opizero/releases/latest).
 
 ### Flashing with `dd` (Linux / macOS)
 
 ```bash
 # Decompress and flash directly to your MicroSD card
-zstd -dc orangepi-zero-alarm-*.img.zst | sudo dd of=/dev/sdX bs=4M status=progress conv=fsync
+zstd -dc aliveos-orangepi-zero-*.img.zst | sudo dd of=/dev/sdX bs=4M status=progress conv=fsync
 ```
 *(Replace `/dev/sdX` with your actual MicroSD card device node, e.g. `/dev/sdb` or `/dev/mmcblk0`)*
 
 ### Flashing with GUI Tools (Windows / macOS / Linux)
-You can decompress `orangepi-zero-alarm-*.img.zst` using [7-Zip](https://www.7-zip.org/) or `zstd -d` and flash the `.img` using **Raspberry Pi Imager** or **balenaEtcher**.
+You can decompress `aliveos-orangepi-zero-*.img.zst` using [7-Zip](https://www.7-zip.org/) or `zstd -d` and flash the `.img` using **Raspberry Pi Imager** or **balenaEtcher**.
 
 ---
 
@@ -122,7 +122,7 @@ sudo pacman -S qemu-user-static binfmt-support parted e2fsprogs uboot-tools zstd
 # sudo apt install qemu-user-static binfmt-support parted e2fsprogs u-boot-tools zstd libarchive-tools wget
 
 # Clone repository
-git clone https://github.com/Twilight0/orangepi-zero-alarm.git
+git clone https://github.com/Twilight0/aliveos-opizero.git
 cd orangepi-zero-alarm
 
 # Run builder
