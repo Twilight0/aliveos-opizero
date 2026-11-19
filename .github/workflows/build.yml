@@ -1,4 +1,4 @@
-name: Build Orange Pi Zero Arch Linux ARM Image
+name: Build AliveOS Orange Pi Zero Image
 
 on:
   schedule:
@@ -62,17 +62,17 @@ jobs:
 
       - name: Build Minimal Image
         run: |
-          sudo OUTPUT_NAME="orangepi-zero-alarm-${{ steps.vars.outputs.tag }}" ./scripts/build-image.sh
+          sudo OUTPUT_NAME="aliveos-orangepi-zero-${{ steps.vars.outputs.tag }}" ./scripts/build-image.sh
 
       - name: Verify Build Artifacts
         run: |
-          ls -la orangepi-zero-alarm-*.img.zst*
-          cat orangepi-zero-alarm-*.img.zst.sha256
+          ls -la aliveos-orangepi-zero-*.img.zst*
+          cat aliveos-orangepi-zero-*.img.zst.sha256
 
       - name: Generate Release Notes
         run: |
           cat << 'EOF' > RELEASE_NOTES.md
-          ## 🍊 Orange Pi Zero Minimal Arch Linux ARM Image
+          ## 🍊 AliveOS — Orange Pi Zero Minimal Image
           **Build Date:** ${{ steps.vars.outputs.date }}
           **Target SoC:** Allwinner H2+ / H3 (256MB / 512MB RAM)
 
@@ -82,18 +82,18 @@ jobs:
           - **Dynamic 256MB & 512MB RAM Support:** Auto-detects memory size in U-Boot SPL; dynamically scales ZRAM (384MB on 256MB boards, 512MB on 512MB boards). Zero OOM lockups.
           - **Power Sag Protection:** Integrated `cpufreq-governor.service` capping quad-core CPU bursts to 1.008 GHz on standard micro-USB chargers.
           - **First-Boot Auto-Resize:** One-shot `orangepi-resize-rootfs.service` automatically expands root partition to 100% of MicroSD card.
-          - **mDNS / ZeroConf Discovery:** Access immediately via `ssh root@orangepi-zero.local` or web browser at `http://orangepi-zero.local:46363`.
+          - **mDNS / ZeroConf Discovery:** Access immediately via `ssh root@aliveos-opizero.local` or web browser at `http://aliveos-opizero.local:46363`.
           - **Networking Ready:** Networkd DHCP enabled with fallback public DNS (`1.1.1.1 8.8.8.8 9.9.9.9`), predictable `wlan0` naming, and XR819 wireless driver pre-integrated.
-          - **Pre-installed Tools:** `orangepi-config`, `usbutils` (`lsusb`), `htop`, `tmux`, `dosfstools`, `exfatprogs`, and an interactive welcome MOTD.
+          - **Pre-installed Tools:** `orangepi-config`, `fastfetch` (with AliveOS branding), `usbutils` (`lsusb`), `htop`, `tmux`, `dosfstools`, `exfatprogs`, and an interactive welcome MOTD.
 
           ### 📦 Default Credentials
           - **Root user:** `root` / `root` (SSH root login permitted)
-          - **Standard user:** `alarm` / `alarm` (sudo enabled)
+          - **Standard user:** `alive` / `alive` (sudo enabled)
 
           ### 💾 Flashing Instructions
           Decompress and write directly to your MicroSD card (replace `/dev/sdX` with your SD card device):
           ```bash
-          zstd -dc orangepi-zero-alarm-*.img.zst | sudo dd of=/dev/sdX bs=4M status=progress conv=fsync
+          zstd -dc aliveos-orangepi-zero-*.img.zst | sudo dd of=/dev/sdX bs=4M status=progress conv=fsync
           ```
           EOF
 
@@ -101,12 +101,12 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.vars.outputs.tag }}
-          name: "Orange Pi Zero Minimal Image ${{ steps.vars.outputs.tag }}"
+          name: "AliveOS Orange Pi Zero Image ${{ steps.vars.outputs.tag }}"
           body_path: RELEASE_NOTES.md
           draft: false
           prerelease: false
           files: |
-            orangepi-zero-alarm-*.img.zst
-            orangepi-zero-alarm-*.img.zst.sha256
+            aliveos-orangepi-zero-*.img.zst
+            aliveos-orangepi-zero-*.img.zst.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

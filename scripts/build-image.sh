@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Build script for minimal Orange Pi Zero (Allwinner H2+) Arch Linux ARM image
+# Build script for minimal AliveOS (Orange Pi Zero / Allwinner H2+) Arch Linux ARM image
 #
 set -euo pipefail
 
@@ -15,7 +15,7 @@ fi
 
 IMAGE_SIZE_MB="${IMAGE_SIZE_MB:-2048}"
 BUILD_DATE="$(date +%Y%m%d)"
-OUTPUT_NAME="${OUTPUT_NAME:-orangepi-zero-alarm-${BUILD_DATE}}"
+OUTPUT_NAME="${OUTPUT_NAME:-aliveos-orangepi-zero-${BUILD_DATE}}"
 RAW_IMG="${ROOT_DIR}/${OUTPUT_NAME}.img"
 ARCH_ROOTFS_URL="${ARCH_ROOTFS_URL:-http://os.archlinuxarm.org/os/ArchLinuxARM-armv7-latest.tar.gz}"
 CACHE_DIR="${ROOT_DIR}/cache"
@@ -154,6 +154,11 @@ cp "${ROOT_DIR}/configs/orangepi-resize-rootfs.service" "${MNT_DIR}/etc/systemd/
 mkdir -p "${MNT_DIR}/etc/profile.d"
 cp "${ROOT_DIR}/configs/99-orangepi-motd.sh" "${MNT_DIR}/etc/profile.d/99-orangepi-motd.sh"
 chmod +x "${MNT_DIR}/etc/profile.d/99-orangepi-motd.sh"
+
+# Fastfetch AliveOS ASCII logo & config
+mkdir -p "${MNT_DIR}/etc/fastfetch" "${MNT_DIR}/etc/xdg/fastfetch"
+cp "${ROOT_DIR}/configs/fastfetch/aliveos.txt" "${MNT_DIR}/etc/fastfetch/aliveos.txt"
+cp "${ROOT_DIR}/configs/fastfetch/config.jsonc" "${MNT_DIR}/etc/xdg/fastfetch/config.jsonc"
 
 # 10. Chroot configuration
 echo "==> Entering chroot via QEMU..."

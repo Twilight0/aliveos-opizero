@@ -44,6 +44,7 @@ ESSENTIAL_PKGS=(
   openresolv
   jq
   ttyd
+  fastfetch
 )
 
 pacman -S --noconfirm --needed "${ESSENTIAL_PKGS[@]}"
@@ -90,8 +91,22 @@ pacman -Rdd --noconfirm \
   linux-firmware-nvidia \
   linux-firmware-cirrus 2>/dev/null || true
 
-# 5. Set hostname
-echo "orangepi-zero" > /etc/hostname
+# 5. Set hostname and AliveOS branding (/etc/os-release)
+echo "aliveos-opizero" > /etc/hostname
+
+cat << 'EOF' > /etc/os-release
+NAME="AliveOS"
+PRETTY_NAME="AliveOS Linux (Orange Pi Zero)"
+ID=aliveos
+ID_LIKE=arch
+BUILD_ID=rolling
+ANSI_COLOR="38;5;51"
+HOME_URL="https://github.com/Twilight0/aliveos"
+DOCUMENTATION_URL="https://github.com/Twilight0/aliveos/wiki"
+SUPPORT_URL="https://github.com/Twilight0/aliveos/issues"
+BUG_REPORT_URL="https://github.com/Twilight0/aliveos/issues"
+LOGO=aliveos
+EOF
 
 # 6. Localization
 echo "==> [chroot] Setting up locale and timezone..."
@@ -104,14 +119,18 @@ fi
 locale-gen || true
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 
-# 7. User accounts & passwords (root:root, alarm:alarm)
+# 7. User accounts & passwords (root:root, alive:alive)
 echo "==> [chroot] Configuring user credentials..."
 echo "root:root" | chpasswd
 
-if ! id -u alarm >/dev/null 2>&1; then
-  useradd -m -g users -G wheel,video,audio,storage -s /bin/bash alarm
+if id -u alarm >/dev/null 2>&1; then
+  userdel -r alarm 2>/dev/null || true
 fi
-echo "alarm:alarm" | chpasswd
+
+if ! id -u alive >/dev/null 2>&1; then
+  useradd -m -g users -G wheel,video,audio,storage -s /bin/bash alive
+fi
+echo "alive:alive" | chpasswd
 
 echo "%wheel ALL=(ALL:ALL) ALL" > /etc/sudoers.d/wheel
 chmod 440 /etc/sudoers.d/wheel

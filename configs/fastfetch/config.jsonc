@@ -1,0 +1,29 @@
+{
+  "logo": {
+    "type": "file",
+    "source": "/etc/fastfetch/aliveos.txt",
+    "color": {
+      "1": "bright_cyan",
+      "2": "38;5;208"
+    }
+  },
+  "modules": [
+    "title",
+    "separator",
+    "os",
+    "host",
+    "kernel",
+    "uptime",
+    "packages",
+    "shell",
+    "terminal",
+    "cpu",
+    "memory",
+    "swap",
+    "disk",
+    "localip",
+    "locale",
+    "break",
+    "colors"
+  ]
+}
