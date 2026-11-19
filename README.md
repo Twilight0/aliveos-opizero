@@ -1,4 +1,4 @@
-# Orange Pi Zero Minimal Arch Linux ARM Image Builder & Weekly CI
+# AliveOS — Orange Pi Zero Minimal Image Builder & Weekly CI
 
 [![Build AliveOS Orange Pi Zero Image](https://github.com/Twilight0/aliveos-opizero/actions/workflows/build.yml/badge.svg)](https://github.com/Twilight0/aliveos-opizero/actions/workflows/build.yml)
 [![Latest Release](https://img.shields.io/github/v/release/Twilight0/aliveos-opizero?include_prereleases&color=orange)](https://github.com/Twilight0/aliveos-opizero/releases/latest)
@@ -27,7 +27,7 @@ Designed from the ground up for maximum power stability, zero OOM crashes on the
 4. **First-Boot Auto-Resize**
    - Built-in one-shot `orangepi-resize-rootfs.service` automatically expands the root partition to 100% of your MicroSD card and resizes the ext4 filesystem online.
 
-5. **ZeroConf / mDNS Discovery (`orangepi-zero.local`)**
+5. **ZeroConf / mDNS Discovery (`aliveos-opizero.local`)**
    - Pre-configured `avahi-daemon` and `nss-mdns` allow immediate access without checking router DHCP tables.
 
 6. **Reliable Headless Networking**
@@ -54,21 +54,21 @@ You can decompress `aliveos-orangepi-zero-*.img.zst` using [7-Zip](https://www.7
 
 ---
 
-## 🌐 Connecting with Avahi / nss-mdns (`orangepi-zero.local`)
+## 🌐 Connecting with Avahi / nss-mdns (`aliveos-opizero.local`)
 
-Thanks to pre-installed `avahi-daemon` and `nss-mdns`, the board broadcasts its hostname as **`orangepi-zero.local`** via multicast DNS. You do **not** need to look up the board's IP address in your router.
+Thanks to pre-installed `avahi-daemon` and `nss-mdns`, the board broadcasts its hostname as **`aliveos-opizero.local`** via multicast DNS. You do **not** need to look up the board's IP address in your router.
 
 ### 1. SSH Access
 Simply connect using the `.local` domain:
 ```bash
-ssh root@orangepi-zero.local
+ssh root@aliveos-opizero.local
 ```
-*(Or use standard user: `ssh alarm@orangepi-zero.local`)*
+*(Or use standard user: `ssh alive@aliveos-opizero.local`)*
 
 ### 2. Web Configuration TUI
 Open your web browser and navigate to:
 ```text
-http://orangepi-zero.local:46363
+http://aliveos-opizero.local:46363
 ```
 This opens the browser-accessible terminal session of `orangepi-config`.
 
@@ -84,7 +84,7 @@ This opens the browser-accessible terminal session of `orangepi-config`.
 | User | Password | SSH Access | Sudo Privileges |
 | :--- | :--- | :--- | :--- |
 | **`root`** | `root` | Yes (`PermitRootLogin yes` enabled) | Full root |
-| **`alarm`** | `alarm` | Yes | Member of `wheel` (`ALL=(ALL:ALL) ALL`) |
+| **`alive`** | `alive` | Yes | Member of `wheel` (`ALL=(ALL:ALL) ALL`) |
 
 ---
 
@@ -94,8 +94,8 @@ The image is intentionally stripped of bloat while providing essential tools for
 
 | Utility | Purpose |
 | :--- | :--- |
-| **`orangepi-config` & `ttyd`** | Full TUI and HTTP Web management UI (`http://orangepi-zero.local:46363`, default `admin:admin`) for Wi-Fi, PIA WireGuard VPN, CPU governors, storage, and software catalog. |
-| **`avahi` & `nss-mdns`** | ZeroConf / mDNS discovery on local networks (`orangepi-zero.local`). |
+| **`orangepi-config` & `ttyd`** | Full TUI and HTTP Web management UI (`http://aliveos-opizero.local:46363`, default `admin:admin`) for Wi-Fi, PIA WireGuard VPN, CPU governors, storage, and software catalog. |
+| **`avahi` & `nss-mdns`** | ZeroConf / mDNS discovery on local networks (`aliveos-opizero.local`). |
 | **`usbutils` (`lsusb`)** | Inspect and verify plugged-in USB storage, webcams, printers, and daughterboard ports. |
 | **`htop`** | Interactive real-time process, CPU, temperature, and memory monitor. |
 | **`tmux`** | Terminal multiplexer to keep persistent sessions alive across network drops. |
@@ -123,7 +123,7 @@ sudo pacman -S qemu-user-static binfmt-support parted e2fsprogs uboot-tools zstd
 
 # Clone repository
 git clone https://github.com/Twilight0/aliveos-opizero.git
-cd orangepi-zero-alarm
+cd aliveos-opizero
 
 # Run builder
 sudo ./scripts/build-image.sh
@@ -134,7 +134,7 @@ sudo ./scripts/build-image.sh
 ## 📂 Repository Layout
 
 ```text
-orangepi-zero-alarm/
+aliveos-opizero/
 ├── .github/workflows/
 │   └── build.yml               # Weekly automated GitHub Actions CI & Release workflow
 ├── bootloader/
@@ -160,4 +160,4 @@ orangepi-zero-alarm/
 
 ## 📄 License
 
-GPL-3.0 License. See [LICENSE](file:///home/twilight/Projects/orangepi-zero-alarm/LICENSE) for details.
+GPL-3.0 License. See [LICENSE](file:///home/twilight/Projects/aliveos-opizero/LICENSE) for details.
